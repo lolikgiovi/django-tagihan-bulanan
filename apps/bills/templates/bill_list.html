@@ -11,42 +11,80 @@
 
     <section>
         {% if bills %}
-            <div class="space-y-3">
-                {% for bill in bills %}
-                    <div class="p-4 border rounded hover:border-gray-300 transition-colors {% if bill.is_overdue %}bg-red-100{% elif bill.due_days <= 3 and not bill.is_overdue %}bg-blue-100{% endif %}">
-                        <div class="flex justify-between">
-                            <div>
-                                <h3 class="font-medium">{{ bill.bill_name }}</h3>
-                                <div class="flex space-x-3 mt-1">
-                                    <p class="text-xs text-gray-500">📅 {{ bill.bill_reminder_date|date:"M d, Y" }}</p>
-                                    <p class="text-xs {% if bill.is_overdue %}text-red-600 font-medium{% elif bill.due_days <= 3 and not bill.is_overdue %}text-blue-600 font-medium{% else %}text-gray-500{% endif %}">
-                                        {% if bill.is_overdue %}
-                                            ⚠️ Overdue by {{ bill.due_days }} day{{ bill.due_days|pluralize }}
-                                        {% elif bill.due_days == 0 %}
-                                            ⏰ Due today
-                                        {% else %}
-                                            ⏳ Due in {{ bill.due_days }} day{{ bill.due_days|pluralize }}
-                                        {% endif %}
-                                    </p>
+            <!-- Unpaid bills -->
+            <div class="mb-6">
+                <h2 class="text-lg font-medium mb-3">Upcoming Bills</h2>
+                <div class="space-y-3">
+                    {% for bill in bills %}
+                        {% if not bill.is_paid %}
+                            <div class="p-4 border rounded hover:border-gray-300 transition-colors">
+                                <div class="flex justify-between">
+                                    <div>
+                                        <h3 class="font-medium">{{ bill.bill_name }}</h3>
+                                        <p class="text-xs text-gray-500 mt-1">{{ bill.due_date|date:"M d, Y" }}</p>
+                                        <p class="text-xs {{ bill.status_class }} mt-1">{{ bill.status }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-medium">
+                                            {% if bill.bill_currency == 'usd' %}${% else %}Rp{% endif %}{{ bill.bill_amount }}
+                                        </p>
+                                        <p class="text-xs text-gray-500 mt-1">{{ bill.payment_account }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end mt-3 space-x-2">
+                                    <form method="post" action="{% url 'bill-pay' bill.transaction_id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="text-xs bg-green-600 text-white px-3 py-1.5 rounded hover:bg-green-700 inline-flex items-center">Pay</button>
+                                    </form>
+                                    <a href="{% url 'bill-update' bill.id %}" class="text-xs text-blue-600 px-3 py-1.5   rounded hover:bg-blue-50 inline-flex items-center">Edit</a>
+                                    <a href="{% url 'bill-delete' bill.id %}" class="text-xs text-red-600 px-3 py-1.5   rounded hover:bg-red-50 inline-flex items-center">Delete</a>
                                 </div>
                             </div>
-                            <div class="text-right">
-                                <p class="font-medium">
-                                    {% if bill.bill_currency == 'usd' %}${% else %}Rp{% endif %}{{ bill.bill_amount }}
-                                </p>
-                                <p class="text-xs text-gray-500 mt-1">{{ bill.payment_account }}</p>
-                            </div>
-                        </div>
-                        <div class="flex justify-end mt-3 space-x-2">
-                            <a href="{% url 'bill-update' bill.id %}" class="text-xs hover:underline">Edit</a>
-                            <a href="{% url 'bill-delete' bill.id %}" class="text-xs hover:underline">Delete</a>
-                        </div>
-                    </div>
-                {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
             </div>
+
+            <!-- Payment History -->
+            <div>
+                <h2 class="text-lg font-medium mb-3">Payment History</h2>
+                <div class="space-y-3">
+                    {% for bill in bills %}
+                        {% if bill.is_paid %}
+                            <div class="p-4 border rounded bg-gray-50 hover:border-gray-300 transition-colors">
+                                <div class="flex justify-between">
+                                    <div>
+                                        <h3 class="font-medium">{{ bill.bill_name }}</h3>
+                                        <p class="text-xs text-gray-500 mt-1">Due: {{ bill.due_date|date:"M d, Y" }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-medium">
+                                            {% if bill.bill_currency == 'usd' %}${% else %}Rp{% endif %}{{ bill.bill_amount }}
+                                        </p>
+                                        <p class="text-xs text-green-600 mt-1">Paid on {{ bill.paid_date|date:"M d, Y" }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">{{ bill.payment_account }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- No bill state -->
+            {% if not bills|dictsortreversed:"is_paid"|first %}
+                <div class="text-center py-6 border rounded mb-6">
+                    <p class="text-gray-500 text-sm">No upcoming bills</p>
+                </div>
+            {% endif %}
+
+            {% if not bills|dictsort:"is_paid"|first %}
+                <div class="text-center py-6 border rounded">
+                    <p class="text-gray-500 text-sm">No payment history</p>
+                </div>
+            {% endif %}
         {% else %}
             <div class="text-center py-10 border rounded">
-                <p class="text-3xl mb-2">📑</p>
                 <p class="text-gray-500 text-sm">No bills found</p>
                 <a href="{% url 'bill-create' %}" class="inline-block mt-3 px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">Add Your First Bill</a>
             </div>
