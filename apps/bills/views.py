@@ -54,13 +54,13 @@ class BillListView(LoginRequiredMixinView, ListView):
                 days_diff = (next_transaction.due_date - today).days
 
                 if days_diff < 0:
-                    bill_item["status"] = f"Overdue by {abs(days_diff)} days"
+                    bill_item["status"] = f"Lewat {abs(days_diff)} hari :("
                     bill_item["status_class"] = "text-red-600"
                 elif days_diff == 0:
-                    bill_item["status"] = "Due today"
+                    bill_item["status"] = "Ayoo bayar hari inii!"
                     bill_item["status_class"] = "text-blue-600 font-medium"
                 else:
-                    bill_item["status"] = f"Due in {days_diff} days"
+                    bill_item["status"] = f"Bayarnya masih {days_diff} hari lagi"
                     bill_item["status_class"] = "text-gray-600"
 
                 unpaid_bills.append(bill_item)
