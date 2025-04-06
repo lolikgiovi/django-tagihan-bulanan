@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "apps.authentications",
     "apps.bills",
     "apps.transactions",
+    "huey.contrib.djhuey"
 ]
 
 MIDDLEWARE = [
