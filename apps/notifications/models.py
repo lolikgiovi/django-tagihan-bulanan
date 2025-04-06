@@ -8,3 +8,5 @@ class Notification(BaseModel):
     notification_date = models.DateField()
     notification_time = models.TimeField()
     is_notified = models.BooleanField(default=False)
+
+
