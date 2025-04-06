@@ -8,5 +8,5 @@ urlpatterns = [
     path("bills/create/", BillCreateView.as_view(), name="bill-create"),
     path("bills/<uuid:pk>/edit/", BillUpdateView.as_view(), name="bill-update"),
     path("bills/<uuid:pk>/delete/", BillDeleteView.as_view(), name="bill-delete"),
-    path("bills/<uuid:pk>/pay/", BillPayView.as_view(), name="bill-pay"),
+    path("bills/<uuid:transaction_id>/pay/", BillPayView.as_view(), name="bill-pay"),
 ]

@@ -12,6 +12,5 @@ class Bills(BaseModel):
         ("usd", "USD"),
     ]
     bill_currency = models.CharField(max_length=3, choices=ALLOWED_CURRENCY)
-    bill_reminder_date = models.DateField()
-    bill_reminder_time = models.TimeField()
+    payment_day = models.IntegerField(default=1)
     payment_account = models.CharField(max_length=30)
