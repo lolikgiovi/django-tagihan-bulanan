@@ -13,11 +13,10 @@ class LoginView(View):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('dashboard')
+            return redirect('bill-list')  # Updated redirect target
 
-        return redirect('dashboard')
+        return redirect('login')
 
 def logout_view(request):
     logout(request)
-
     return redirect('login')
