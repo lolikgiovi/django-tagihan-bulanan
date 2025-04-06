@@ -3,10 +3,30 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %} Tagihan Bulanan {% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Tagihan Bulanan{% endblock %}</title>
     <link href="{% static 'output.css' %}" rel="stylesheet" />
 </head>
-<body>
-    {% block content %} {% endblock %}
+<body class="bg-white min-h-screen">
+    <header class="border-b py-3">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <a href="{% url 'dashboard' %}" class="text-lg font-medium">Tagihan Bulanan</a>
+                <div>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'logout' %}" class="text-sm text-gray-600 hover:text-gray-900">Keluar</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="text-sm text-gray-600 hover:text-gray-900">Masuk</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="py-6">
+        <div class="max-w-4xl mx-auto px-4">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
 </body>
 </html>
