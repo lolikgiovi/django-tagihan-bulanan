@@ -1,25 +1,34 @@
 {% extends 'base.html' %}
 
-{% block title %}Tagihanku | Tagihan Bulanan{% endblock %}
+{% block title %}Bills | Tagihan Bulanan{% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-xl font-medium">Tagihanku</h1>
-        <a href="{% url 'bill-create' %}" class="px-4 py-2 bg-blue-600 text-white text-sm rounded-md shadow-sm hover:shadow">Tambah Tagihan Baru</a>
+        <h1 class="text-xl font-medium">Bills</h1>
+        <a href="{% url 'bill-create' %}" class="px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">Add Bill</a>
     </div>
 
     <section>
         {% if bills %}
             <div class="space-y-3">
                 {% for bill in bills %}
-                    <div class="p-5 bg-white border rounded-lg shadow-sm hover:shadow">
+                    <div class="p-4 border rounded hover:border-gray-300 transition-colors {% if bill.is_overdue %}bg-red-100{% elif bill.due_days <= 3 and not bill.is_overdue %}bg-blue-100{% endif %}">
                         <div class="flex justify-between">
                             <div>
                                 <h3 class="font-medium">{{ bill.bill_name }}</h3>
-                                <p class="text-xs text-gray-500 mt-1">
-                                    📅 {{ bill.bill_reminder_date|date:"M d, Y" }}
-                                </p>
+                                <div class="flex space-x-3 mt-1">
+                                    <p class="text-xs text-gray-500">📅 {{ bill.bill_reminder_date|date:"M d, Y" }}</p>
+                                    <p class="text-xs {% if bill.is_overdue %}text-red-600 font-medium{% elif bill.due_days <= 3 and not bill.is_overdue %}text-blue-600 font-medium{% else %}text-gray-500{% endif %}">
+                                        {% if bill.is_overdue %}
+                                            ⚠️ Overdue by {{ bill.due_days }} day{{ bill.due_days|pluralize }}
+                                        {% elif bill.due_days == 0 %}
+                                            ⏰ Due today
+                                        {% else %}
+                                            ⏳ Due in {{ bill.due_days }} day{{ bill.due_days|pluralize }}
+                                        {% endif %}
+                                    </p>
+                                </div>
                             </div>
                             <div class="text-right">
                                 <p class="font-medium">
@@ -28,7 +37,7 @@
                                 <p class="text-xs text-gray-500 mt-1">{{ bill.payment_account }}</p>
                             </div>
                         </div>
-                        <div class="flex justify-end mt-3 space-x-3">
+                        <div class="flex justify-end mt-3 space-x-2">
                             <a href="{% url 'bill-update' bill.id %}" class="text-xs hover:underline">Edit</a>
                             <a href="{% url 'bill-delete' bill.id %}" class="text-xs hover:underline">Delete</a>
                         </div>
@@ -36,10 +45,10 @@
                 {% endfor %}
             </div>
         {% else %}
-            <div class="text-center py-12 bg-white border rounded-lg shadow-sm">
+            <div class="text-center py-10 border rounded">
                 <p class="text-3xl mb-2">📑</p>
-                <p class="text-gray-500 text-sm mb-4">Gaada tagihan.</p>
-                <a href="{% url 'bill-create' %}" class="inline-block px-4 py-2 bg-blue-600 text-white text-sm rounded-md shadow-sm hover:shadow">Tambah Tagihan Pertamamu</a>
+                <p class="text-gray-500 text-sm">No bills found</p>
+                <a href="{% url 'bill-create' %}" class="inline-block mt-3 px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700">Add Your First Bill</a>
             </div>
         {% endif %}
     </section>

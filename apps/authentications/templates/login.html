@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Login | Tagihan Bulanan{% endblock %}
+{% block title %}Masuk | Tagihan Bulanan{% endblock %}
 
 {% block content %}
 <div class="flex justify-center items-center min-h-[80vh]">
@@ -14,26 +14,15 @@
             {% csrf_token %}
 
             <div>
-                <input
-                    name="username"
-                    placeholder="Email"
-                    required
-                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                />
+                <input name="username" placeholder="Email" required class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
             </div>
 
             <div>
-                <input
-                    name="password"
-                    placeholder="Password"
-                    type="password"
-                    required
-                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
-                />
+                <input name="password" placeholder="Password" type="password" required class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"/>
             </div>
 
             <button type="submit" class="w-full py-2 bg-blue-600 text-white rounded-md shadow-sm hover:shadow">
-                Login
+                Masuk
             </button>
         </form>
     </div>
