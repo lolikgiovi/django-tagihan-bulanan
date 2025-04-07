@@ -88,6 +88,6 @@ The application consists of three main Django apps:
 You can test the application using these credentials:
 
 ```
-Username: test
-Password: 12345
+Username: testuser
+Password: test12345
 ```
